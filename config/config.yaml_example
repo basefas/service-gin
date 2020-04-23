@@ -1,0 +1,11 @@
+app:
+  name: service-gin
+  runMode: debug
+  port: 8086
+db:
+  mysql:
+    host: 192.168.0.1
+    port: 3306
+    user: root
+    password: 123456
+    name: server_db
