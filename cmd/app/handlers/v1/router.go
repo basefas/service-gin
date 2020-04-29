@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 
+	middleware "basefas.com/service-gin/internal/mid"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 )
@@ -39,12 +40,18 @@ func setupRouter() *gin.Engine {
 	api := r.Group("/api/v1")
 
 	user := api.Group("/user")
+	user.Use(middleware.JWT())
 	{
 		user.POST("", UserCreate)
 		user.GET("/:id", UserGet)
 		user.PUT("/:id", UserUpdate)
 		user.DELETE("/:id", UserDelete)
 		user.GET("/", UserList)
+	}
+
+	login := api.Group("/login")
+	{
+		login.POST("", LogIn)
 	}
 
 	return r

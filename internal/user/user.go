@@ -1,13 +1,20 @@
 package user
 
 import (
+	"basefas.com/service-gin/internal/auth"
 	"basefas.com/service-gin/internal/utils/db"
 	"github.com/jinzhu/gorm"
 	"github.com/pkg/errors"
 )
 
 var (
-	ErrNotFound = errors.New("User not found")
+	ErrNotFound = errors.New("User not found.")
+
+	ErrIncorrectUsernameOrPassword = errors.New("Incorrect username or password.")
+
+	ErrUsernameOrPasswordNil = errors.New("Username or password can not be null.")
+
+	ErrGenerateTokenFailed = errors.New("Generate token failed")
 )
 
 func Create(cu CreateUser) error {
@@ -86,4 +93,27 @@ func List() ([]GetUserInfo, error) {
 		return nil, err
 	}
 	return users, nil
+}
+
+func Token(pl Login) (string, error) {
+
+	if len(pl.Username) <= 0 || len(pl.Password) <= 0 {
+		return "", ErrUsernameOrPasswordNil
+	}
+
+	var user User
+	err := db.Mysql.
+		Where("username = ? ", pl.Username).
+		Where("password = ? ", pl.Password).
+		Find(&user).Error
+
+	if err != nil {
+		return "", ErrIncorrectUsernameOrPassword
+	}
+
+	token, tokenErr := auth.GenerateToken(user.ID)
+	if tokenErr != nil {
+		return "", ErrGenerateTokenFailed
+	}
+	return token, nil
 }
