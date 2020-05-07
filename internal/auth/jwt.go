@@ -47,3 +47,11 @@ func ParseToken(tokenString string) (*Claims, error) {
 	claims := token.Claims.(*Claims)
 	return claims, nil
 }
+
+func GetUID(tokenString string) (uint, error) {
+	claims, err := ParseToken(tokenString)
+	if err != nil {
+		return 0, err
+	}
+	return claims.UID, nil
+}

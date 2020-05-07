@@ -3,6 +3,7 @@ package v1
 import (
 	"fmt"
 
+	"basefas.com/service-gin/internal/auth"
 	middleware "basefas.com/service-gin/internal/mid"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -47,6 +48,14 @@ func setupRouter() *gin.Engine {
 		user.PUT("/:id", UserUpdate)
 		user.DELETE("/:id", UserDelete)
 		user.GET("/", UserList)
+	}
+
+	policy := api.Group("/policy")
+	policy.Use(middleware.Casbin(auth.Casbin))
+
+	{
+		policy.POST("", PolicyCreate)
+		policy.GET("/:id", PolicyGet)
 	}
 
 	login := api.Group("/login")
