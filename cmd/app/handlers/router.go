@@ -1,8 +1,10 @@
-package v1
+package handlers
 
 import (
 	"fmt"
 
+	"basefas.com/service-gin/cmd/app/handlers/base"
+	"basefas.com/service-gin/cmd/app/handlers/v1"
 	"basefas.com/service-gin/internal/auth"
 	middleware "basefas.com/service-gin/internal/mid"
 	"github.com/gin-gonic/gin"
@@ -36,31 +38,31 @@ func setupRouter() *gin.Engine {
 	r.Use(gin.Logger())
 	r.Use(gin.Recovery())
 
-	r.GET("/health", Health)
+	r.GET("/health", base.Health)
 
 	api := r.Group("/api/v1")
 
 	user := api.Group("/user")
 	user.Use(middleware.JWT())
 	{
-		user.POST("", UserCreate)
-		user.GET("/:id", UserGet)
-		user.PUT("/:id", UserUpdate)
-		user.DELETE("/:id", UserDelete)
-		user.GET("/", UserList)
+		user.POST("", v1.UserCreate)
+		user.GET("/:id", v1.UserGet)
+		user.PUT("/:id", v1.UserUpdate)
+		user.DELETE("/:id", v1.UserDelete)
+		user.GET("/", v1.UserList)
 	}
 
 	policy := api.Group("/policy")
 	policy.Use(middleware.Casbin(auth.Casbin))
 
 	{
-		policy.POST("", PolicyCreate)
-		policy.GET("/:id", PolicyGet)
+		policy.POST("", v1.PolicyCreate)
+		policy.GET("/:id", v1.PolicyGet)
 	}
 
 	login := api.Group("/login")
 	{
-		login.POST("", LogIn)
+		login.POST("", v1.LogIn)
 	}
 
 	return r

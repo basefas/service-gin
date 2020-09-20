@@ -1,7 +1,7 @@
 package main
 
 import (
-	"basefas.com/service-gin/cmd/app/handlers/v1"
+	"basefas.com/service-gin/cmd/app/handlers"
 	"basefas.com/service-gin/internal/auth"
 	"basefas.com/service-gin/internal/utils/conf"
 	"basefas.com/service-gin/internal/utils/db/mysql"
@@ -15,5 +15,5 @@ func run() {
 	conf.Init()
 	mysql.Init()
 	auth.Init()
-	v1.Init()
+	handlers.Init()
 }

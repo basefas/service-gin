@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"basefas.com/service-gin/cmd/app/handlers"
 	"basefas.com/service-gin/internal/auth"
 	"github.com/gin-gonic/gin"
 )
@@ -8,16 +9,16 @@ import (
 func PolicyCreate(c *gin.Context) {
 	var cp auth.CreatePolicy
 	if err := c.ShouldBindJSON(&cp); err != nil {
-		Re(c, -1, err.Error(), nil)
+		handlers.Re(c, -1, err.Error(), nil)
 		return
 	}
 
 	_, err := auth.Casbin.AddPolicy(cp.UID, cp.PolicyUrl, cp.PolicyMethod)
 
 	if err != nil {
-		Re(c, -1, err.Error(), nil)
+		handlers.Re(c, -1, err.Error(), nil)
 	} else {
-		Re(c, 0, "success", nil)
+		handlers.Re(c, 0, "success", nil)
 	}
 }
 
@@ -27,9 +28,9 @@ func PolicyGet(c *gin.Context) {
 	res, err := auth.Casbin.GetRolesForUser(uid)
 
 	if err != nil {
-		Re(c, -1, err.Error(), nil)
+		handlers.Re(c, -1, err.Error(), nil)
 
 	} else {
-		Re(c, 0, "success", res)
+		handlers.Re(c, 0, "success", res)
 	}
 }
